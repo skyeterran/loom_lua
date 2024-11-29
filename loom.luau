@@ -37,7 +37,11 @@ function module.start(fn)
     module.convo = { coroutine.create(fn) }
 end
 
+local function schedule(fn)
+end
+
 function module.step(input: any?)
+    module.input = input
     local block = module.convo[#module.convo]
     local alive, value = coroutine.resume(block)
     if alive and value then
@@ -48,7 +52,22 @@ function module.step(input: any?)
             for k, _ in value.contents do
                 print(`--> \"{k}\"`)
             end
-            -- TODO: This
+            table.insert(
+                module.convo,
+                coroutine.create(function()
+                    print(`You chose \"{module.input}\"`)
+                    local chosen = value.contents[module.input]
+                    if chosen then
+                        table.insert(
+                            module.convo,
+                            coroutine.create(function()
+                                module.run(chosen)
+                            end)
+                        )
+                        module.step()
+                    end
+                end)
+            )
         end
         if value.kind == "run" then
             -- Add path to stack
