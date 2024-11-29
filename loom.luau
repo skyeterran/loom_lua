@@ -3,6 +3,7 @@ local module = {
 }
 
 function module.say(txt: string)
+    print(`Stack depth = {#module.convo}`)
     coroutine.yield({
         kind = "line",
         contents = txt
@@ -12,6 +13,13 @@ end
 function module.act(fn: () -> ())
     coroutine.yield({
         kind = "act",
+        contents = fn
+    })
+end
+
+function module.jump(fn: () -> ())
+    coroutine.yield({
+        kind = "jump",
         contents = fn
     })
 end
@@ -33,6 +41,11 @@ function module.step(input: any?)
                 module.convo,
                 coroutine.create(value.contents)
             )
+            module.step()
+        end
+        if value.kind == "jump" then
+            -- Replace the stack entirely
+            module.convo = { coroutine.create(value.contents) }
             module.step()
         end
     else

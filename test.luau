@@ -1,10 +1,15 @@
 loom = require("./loom")
 say = loom.say
 act = loom.act
+jump = loom.jump
 
-loom.start(function()
+local gay = true
+function main()
     say("A")
     say("B")
+    if gay then
+        say("Nice lol")
+    end
     say("C")
     act(function()
         say("  D")
@@ -24,4 +29,9 @@ loom.start(function()
         say("  O")
         say("  P")
     end)
-end)
+
+    -- Restart the loop
+    jump(main)
+end
+
+loom.start(main)
