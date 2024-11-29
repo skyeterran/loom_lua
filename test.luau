@@ -1,37 +1,36 @@
 loom = require("./loom")
 say = loom.say
-act = loom.act
+choose = loom.choose
+run = loom.run
 jump = loom.jump
+step = loom.step
+
+-- Charruners
+local skye = { name = "Skye" }
 
 local gay = true
 function main()
-    say("A")
-    say("B")
+    say(skye, "Hey, there!")
+    say(skye, "Um, welcome to the space station.")
     if gay then
-        say("Nice lol")
+        say(skye, "Oh nice, youre gay!")
     end
-    say("C")
-    act(function()
-        say("  D")
-        say("  E")
-        say("  F")
-        act(function()
-            say("    G")
-            say("    H")
-            say("    I")
-        end)
-    end)
-    say("K")
-    say("L")
-    say("M")
-    act(function()
-        say("  N")
-        say("  O")
-        say("  P")
-    end)
+    run(check_bags)
 
     -- Restart the loop
     jump(main)
+end
+
+function check_bags()
+    say(skye, "May I check your bags?")
+    choose{
+        ["yes"] = function()
+            say(skye, "Oh, sweet!")
+        end,
+        ["no"] = function()
+            say(skye, "What? Why not?")
+        end,
+    }
 end
 
 loom.start(main)

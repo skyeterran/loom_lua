@@ -1,27 +1,36 @@
 local module = {
-    convo = nil
+    convo = nil,
+    input = nil
 }
 
-function module.say(txt: string)
-    print(`Stack depth = {#module.convo}`)
-    coroutine.yield({
+function module.say(speaker, txt: string)
+    --print(`Stack depth = {#module.convo}`)
+    coroutine.yield{
         kind = "line",
-        contents = txt
-    })
+        contents = txt,
+        speaker = speaker,
+    }
 end
 
-function module.act(fn: () -> ())
-    coroutine.yield({
-        kind = "act",
+function module.choose(options)
+    coroutine.yield{
+        kind = "choice",
+        contents = options
+    }
+end
+
+function module.run(fn: () -> ())
+    coroutine.yield{
+        kind = "run",
         contents = fn
-    })
+    }
 end
 
 function module.jump(fn: () -> ())
-    coroutine.yield({
+    coroutine.yield{
         kind = "jump",
         contents = fn
-    })
+    }
 end
 
 function module.start(fn)
@@ -33,9 +42,15 @@ function module.step(input: any?)
     local alive, value = coroutine.resume(block)
     if alive and value then
         if value.kind == "line" then
-            print(value.contents)
+            print(`{value.speaker.name}: {value.contents}`)
         end
-        if value.kind == "act" then
+        if value.kind == "choice" then
+            for k, _ in value.contents do
+                print(`--> \"{k}\"`)
+            end
+            -- TODO: This
+        end
+        if value.kind == "run" then
             -- Add path to stack
             table.insert(
                 module.convo,
