@@ -26,11 +26,14 @@ function check_bags()
     choose{
         ["yes"] = function()
             say(skye, "Oh, sweet!")
+            say(skye, "I've dissolved them for you.")
         end,
         ["no"] = function()
             say(skye, "What? Why not?")
+            say(skye, "You're on your own, then.")
         end,
     }
+    say(skye, "Guess that's sorted!")
 end
 
 loom.start(main)

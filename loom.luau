@@ -1,6 +1,5 @@
 local module = {
     convo = nil,
-    input = nil
 }
 
 function module.say(speaker, txt: string)
@@ -12,6 +11,15 @@ function module.say(speaker, txt: string)
     }
 end
 
+-- Runs a branch depending on the input key
+function module.branch(fn)
+    coroutine.yield{
+        kind = "branch",
+        contents = fn
+    }
+end
+
+-- Like a branch, but presents the options first
 function module.choose(options)
     coroutine.yield{
         kind = "choice",
@@ -38,43 +46,37 @@ function module.start(fn)
 end
 
 local function schedule(fn)
+    table.insert(
+        module.convo,
+        coroutine.create(fn)
+    )
 end
 
 function module.step(input: any?)
-    module.input = input
     local block = module.convo[#module.convo]
     local alive, value = coroutine.resume(block)
     if alive and value then
         if value.kind == "line" then
             print(`{value.speaker.name}: {value.contents}`)
         end
+        if value.kind == "branch" then
+            local chosen = value.contents[input]
+            if chosen then
+                schedule(chosen)
+            end
+            module.step()
+        end
         if value.kind == "choice" then
+            print("Choose one:")
             for k, _ in value.contents do
                 print(`--> \"{k}\"`)
             end
-            table.insert(
-                module.convo,
-                coroutine.create(function()
-                    print(`You chose \"{module.input}\"`)
-                    local chosen = value.contents[module.input]
-                    if chosen then
-                        table.insert(
-                            module.convo,
-                            coroutine.create(function()
-                                module.run(chosen)
-                            end)
-                        )
-                        module.step()
-                    end
-                end)
-            )
+            schedule(function()
+                module.branch(value.contents)
+            end)
         end
         if value.kind == "run" then
-            -- Add path to stack
-            table.insert(
-                module.convo,
-                coroutine.create(value.contents)
-            )
+            schedule(value.contents)
             module.step()
         end
         if value.kind == "jump" then
