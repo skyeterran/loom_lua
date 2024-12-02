@@ -63,8 +63,10 @@ function module.step(input: any?)
             local chosen = value.contents[input]
             if chosen then
                 schedule(chosen)
+                module.step()
+            else
+                print("Invalid choice!")
             end
-            module.step()
         end
         if value.kind == "choice" then
             print("Choose one:")
