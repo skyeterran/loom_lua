@@ -2,12 +2,18 @@ local module = {
     convo = nil,
 }
 
-function module.say(speaker, txt: string)
-    --print(`Stack depth = {#module.convo}`)
+-- Initializes a character, making it callable
+type Character = { name: string }
+function module.character(char: Character)
+    setmetatable(char, { __call = say })
+    return char
+end
+
+function say(self, txt: string)
     coroutine.yield{
         kind = "line",
         contents = txt,
-        speaker = speaker,
+        speaker = self,
     }
 end
 
@@ -20,7 +26,7 @@ function module.branch(fn)
 end
 
 -- Like a branch, but presents the options first
-function module.choose(options)
+function module.choice(options)
     coroutine.yield{
         kind = "choice",
         contents = options
@@ -34,7 +40,7 @@ function module.jump(fn: () -> ())
     }
 end
 
-function module.start(fn)
+function module.run(fn)
     module.convo = { coroutine.create(fn) }
 end
 
@@ -72,7 +78,7 @@ function module.step(input: any?)
             end)
         end
         if value.kind == "jump" then
-            module.start(value.contents)
+            module.run(value.contents)
             module.step()
         end
     else

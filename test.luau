@@ -1,44 +1,41 @@
 loom = require("./loom")
-say = loom.say
-choose = loom.choose
-jump = loom.jump
 
 -- Characters
-local skye = { name = "Skye" }
+skye = loom.character{ name = "Skye" }
 
 local gay = true
-function main()
-    say(skye, "Hey, there!")
-    say(skye, "Um, welcome to the space station.")
+function start()
+    skye("Hey, there!")
+    skye("Um, welcome to the space station.")
     if gay then
-        say(skye, "Oh nice, youre gay!")
+        skye("Oh nice, youre gay!")
     else
-        jump(the_brig)
+        loom.jump(the_brig)
     end
     check_bags()
 
     -- Restart the loop
-    jump(main)
+    loom.jump(start)
 end
 
 function check_bags()
-    say(skye, "May I check your bags?")
-    choose{
+    skye("May I check your bags?")
+    loom.choice{
         ["yes"] = function()
-            say(skye, "Oh, sweet!")
-            say(skye, "I've dissolved them for you.")
+            skye("Oh, sweet!")
+            skye("I've dissolved them for you.")
         end,
         ["no"] = function()
-            say(skye, "What? Why not?")
-            say(skye, "You're on your own, then.")
+            skye("What? Why not?")
+            skye("You're on your own, then.")
         end,
     }
-    say(skye, "Guess that's sorted!")
+    skye("Guess that's sorted!")
 end
 
 function the_brig()
-    say(skye, "Well, now you're in space jail.")
-    say(skye, "Happy now?")
+    skye("Well, now you're in space jail.")
+    skye("Happy now?")
 end
 
-loom.start(main)
+loom.run(start)
