@@ -1,13 +1,20 @@
-loom = require("./loom")
-random = require("./random")
+loom = require("./loom/core")
+random = require("./loom/random")
 
 -- Characters
-narrator = loom.character{ name = nil }
-skye = loom.character{ name = "Skye" }
-zeelay = loom.character{ name = "Ze'elay" }
+local narrator = loom.character{}
+local player = loom.character{ name = "You" }
+local krell = loom.character{ name = "Krell" }
+local zeelay = loom.character{ name = "Ze'elay" }
+local greeter, bellhop = nil
 
 local loops = 0
 function start()
+    -- Random task assignments
+    local employees = { krell, zeelay }
+    greeter = random.pop(employees)
+    bellhop = random.pop(employees)
+
     narrator("You wake up in what looks like an airline terminal.")
 
     loops = loops + 1
@@ -16,12 +23,13 @@ function start()
         look_at_window()
     end
 
-    skye(random.item{
+    greeter(random.item{
         "Hello, there!",
         "Uh... hey.",
         "What's up?"
     })
-    skye("Um, welcome to the space station.")
+    greeter("Um, welcome to the space station.")
+    greeter(`I'm {greeter.name}.`)
     check_bags()
 
     -- Restart the loop
@@ -29,19 +37,21 @@ function start()
 end
 
 function check_bags()
-    local char = random.item{ skye, zeelay }
-    char("May I check your bags?")
+    bellhop(`And my name's {bellhop.name}.`)
+    bellhop("May I check your bags?")
     loom.choice{
         ["yes"] = function()
-            char("Oh, sweet!")
-            char("I've dissolved them for you.")
+            player("Um, sure?")
+            bellhop("Oh, sweet!")
+            bellhop("I've dissolved them for you.")
         end,
         ["no"] = function()
-            char("What? Why not?")
-            char("You're on your own, then.")
+            player("Uh, no thanks.")
+            bellhop("What? Why not?")
+            bellhop("You're on your own, then.")
         end,
     }
-    char("What, no tip? Jackass.")
+    bellhop("What, no tip? Jackass.")
 end
 
 function look_at_window()
