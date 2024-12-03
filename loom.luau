@@ -3,7 +3,7 @@ local module = {
 }
 
 -- Initializes a character, making it callable
-type Character = { name: string }
+type Character = { name: string? }
 function module.character(char: Character)
     setmetatable(char, { __call = say })
     return char
