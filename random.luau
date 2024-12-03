@@ -4,7 +4,7 @@ local module = {
     number = math.random
 }
 
-function module.choice(table: {any})
+function module.item(table: {any})
     return table[math.random(1, #table)]
 end
 

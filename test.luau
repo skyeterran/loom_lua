@@ -4,6 +4,7 @@ random = require("./random")
 -- Characters
 narrator = loom.character{ name = nil }
 skye = loom.character{ name = "Skye" }
+zeelay = loom.character{ name = "Ze'elay" }
 
 local loops = 0
 function start()
@@ -15,7 +16,7 @@ function start()
         look_at_window()
     end
 
-    skye(random.choice{
+    skye(random.item{
         "Hello, there!",
         "Uh... hey.",
         "What's up?"
@@ -28,18 +29,19 @@ function start()
 end
 
 function check_bags()
-    skye("May I check your bags?")
+    local char = random.item{ skye, zeelay }
+    char("May I check your bags?")
     loom.choice{
         ["yes"] = function()
-            skye("Oh, sweet!")
-            skye("I've dissolved them for you.")
+            char("Oh, sweet!")
+            char("I've dissolved them for you.")
         end,
         ["no"] = function()
-            skye("What? Why not?")
-            skye("You're on your own, then.")
+            char("What? Why not?")
+            char("You're on your own, then.")
         end,
     }
-    skye("Guess that's sorted!")
+    char("What, no tip? Jackass.")
 end
 
 function look_at_window()

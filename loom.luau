@@ -5,11 +5,11 @@ local module = {
 -- Initializes a character, making it callable
 type Character = { name: string? }
 function module.character(char: Character)
-    setmetatable(char, { __call = say })
+    setmetatable(char, { __call = module.say })
     return char
 end
 
-function say(self, txt: string)
+function module.say(self, txt: string)
     coroutine.yield{
         kind = "line",
         contents = txt,
