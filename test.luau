@@ -4,23 +4,25 @@ random = require("./loom/random")
 -- Characters
 local narrator = loom.character{}
 local player = loom.character{ name = "You" }
-local krell = loom.character{ name = "Krell" }
 local zeelay = loom.character{ name = "Ze'elay" }
-local greeter, bellhop = nil
+local krell = loom.character{ name = "Krell" }
+local tarsk = loom.character{ name = "Tarsk" }
+local greeter, bellhop, custodian = nil
 
 local loops = 0
 function start()
     -- Random task assignments
-    local employees = { krell, zeelay }
+    local employees = { zeelay, krell, tarsk }
     greeter = random.pop(employees)
     bellhop = random.pop(employees)
+    custodian = random.pop(employees)
 
     narrator("You wake up in what looks like an airline terminal.")
 
     loops = loops + 1
     if loops == 3 then
         narrator("Three times over? Seems excessive.")
-        look_at_window()
+        look_at_window(start)
     end
 
     greeter(random.item{
@@ -54,9 +56,16 @@ function check_bags()
     bellhop("What, no tip? Jackass.")
 end
 
-function look_at_window()
+function look_at_window(fn)
     narrator("You look at the portside window.")
     narrator("What is this place, really?")
+    custodian("Looks fucking sexy, right?")
+    player("Excuse me?")
+    custodian("Don't wanna fuck space?")
+    player(`Your nametag just says \"{custodian.name} the Pervert\".`)
+    custodian("I also grease the vacuum robots at night.")
+    player("I'm starting over again now.")
+    loom.jump(fn)
 end
 
 loom.run(start)
