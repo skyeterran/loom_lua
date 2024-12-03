@@ -1,19 +1,26 @@
 loom = require("./loom")
+random = require("./random")
 
 -- Characters
 narrator = loom.character{ name = nil }
 skye = loom.character{ name = "Skye" }
 
-local gay = true
+local loops = 0
 function start()
     narrator("You wake up in what looks like an airline terminal.")
-    skye("Hey, there!")
-    skye("Um, welcome to the space station.")
-    if gay then
-        skye("Oh nice, youre gay!")
-    else
-        loom.jump(the_brig)
+
+    loops = loops + 1
+    if loops == 3 then
+        narrator("Three times over? Seems excessive.")
+        look_at_window()
     end
+
+    skye(random.choice{
+        "Hello, there!",
+        "Uh... hey.",
+        "What's up?"
+    })
+    skye("Um, welcome to the space station.")
     check_bags()
 
     -- Restart the loop
@@ -35,9 +42,9 @@ function check_bags()
     skye("Guess that's sorted!")
 end
 
-function the_brig()
-    skye("Well, now you're in space jail.")
-    skye("Happy now?")
+function look_at_window()
+    narrator("You look at the portside window.")
+    narrator("What is this place, really?")
 end
 
 loom.run(start)
