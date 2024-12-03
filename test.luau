@@ -1,10 +1,12 @@
 loom = require("./loom")
 
 -- Characters
+narrator = loom.character{ name = nil }
 skye = loom.character{ name = "Skye" }
 
 local gay = true
 function start()
+    narrator("You wake up in what looks like an airline terminal.")
     skye("Hey, there!")
     skye("Um, welcome to the space station.")
     if gay then

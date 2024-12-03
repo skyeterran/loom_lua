@@ -56,7 +56,7 @@ function module.step(input: any?)
     local alive, value = coroutine.resume(block)
     if alive and value then
         if value.kind == "line" then
-            if value.speaker then
+            if value.speaker.name then
                 print(`{value.speaker.name}: {value.contents}`)
             else
                 print(value.contents)
