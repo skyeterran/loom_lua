@@ -1,11 +1,9 @@
 loom = require("./loom")
 say = loom.say
 choose = loom.choose
-run = loom.run
 jump = loom.jump
-step = loom.step
 
--- Charruners
+-- Characters
 local skye = { name = "Skye" }
 
 local gay = true
@@ -14,8 +12,10 @@ function main()
     say(skye, "Um, welcome to the space station.")
     if gay then
         say(skye, "Oh nice, youre gay!")
+    else
+        jump(the_brig)
     end
-    run(check_bags)
+    check_bags()
 
     -- Restart the loop
     jump(main)
@@ -34,6 +34,11 @@ function check_bags()
         end,
     }
     say(skye, "Guess that's sorted!")
+end
+
+function the_brig()
+    say(skye, "Well, now you're in space jail.")
+    say(skye, "Happy now?")
 end
 
 loom.start(main)

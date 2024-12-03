@@ -27,13 +27,6 @@ function module.choose(options)
     }
 end
 
-function module.run(fn: () -> ())
-    coroutine.yield{
-        kind = "run",
-        contents = fn
-    }
-end
-
 function module.jump(fn: () -> ())
     coroutine.yield{
         kind = "jump",
@@ -65,6 +58,7 @@ function module.step(input: any?)
                 schedule(chosen)
                 module.step()
             else
+                -- TODO: Replace with error()
                 print("Invalid choice!")
             end
         end
@@ -77,17 +71,11 @@ function module.step(input: any?)
                 module.branch(value.contents)
             end)
         end
-        if value.kind == "run" then
-            schedule(value.contents)
-            module.step()
-        end
         if value.kind == "jump" then
-            -- Replace the stack entirely
-            module.convo = { coroutine.create(value.contents) }
+            module.start(value.contents)
             module.step()
         end
     else
-        -- Pop finished path from stack
         table.remove(module.convo, #module.convo)
         module.step()
     end
